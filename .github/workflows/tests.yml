@@ -1,0 +1,15 @@
+name: Tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv venv --python 3.13 .history-venv
+      - run: uv pip install --python .history-venv/bin/python -r history/requirements.lock
+      - run: uvx ruff==0.4.8 check history
+      - run: uvx ruff==0.4.8 format --check history
+      - run: .history-venv/bin/python -m unittest discover -s history -t . -v

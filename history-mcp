@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")"
+if [ ! -x .history-venv/bin/python ]; then
+  echo 'Run ./index-history first to prepare the environment.' >&2
+  exit 1
+fi
+exec .history-venv/bin/python -m history.mcp_server

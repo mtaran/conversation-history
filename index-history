@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")"
+if ! command -v uv >/dev/null 2>&1; then
+  echo 'Install uv first: https://docs.astral.sh/uv/getting-started/installation/' >&2
+  exit 1
+fi
+if [ ! -x .history-venv/bin/python ]; then uv venv --python 3.13 .history-venv; fi
+if ! cmp -s history/requirements.lock .history-venv/requirements.installed; then
+  uv pip install --python .history-venv/bin/python -r history/requirements.lock
+  cp history/requirements.lock .history-venv/requirements.installed
+fi
+exec .history-venv/bin/python -m history.build
